@@ -90,14 +90,16 @@ app.post('/signwithkey', function(req,res){
     }else{
         let userIndex = server.getUserIndex(username);
         if(userIndex >= 0){
-            //let publicKey = req.files.file.data.toString('utf8');
-            //server.users[userIndex].publicKey = publicKey;
             var privateKey;
+            
+            //TODO: having trouble signing message with private key 
+            //  that is associated with user object. 
+            //server.users[userIndex].publicKey = publicKey;
             //var privateKey = server.users[userIndex].privateKey;
             privateKey = fs.readFileSync('key.pem', 'utf-8');
             if(privateKey){
                 let signature_hex = server.signWithPrivateKey(privateKey, message);
-                console.log('message is signed with a private key')
+                console.log('message is signed with a private key');
                 res.send(signature_hex);
                 
             }else{
@@ -196,7 +198,7 @@ class Server {
         const signer = crypto.createSign('sha256');
         signer.update(message);
         signer.end();
-        //  privatekey = fs.readFileSync('key.pem', 'utf-8');
+        
         const signature = signer.sign(privateKey);
         const signature_hex = signature.toString('hex');
         return signature_hex

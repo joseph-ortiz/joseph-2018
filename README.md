@@ -8,7 +8,8 @@ node server.js
 ```
 
 Prerequisite: generate public and private keys 
-In *NIX terminal, generate a ssh using ssh-keygen
+In *NIX terminal, generate a ssh using ssh-keygen.
+Note sample public and private keysare attached.
 
 
 ```code
@@ -93,6 +94,8 @@ curl --header "Content-Type: application/json" \
   --data '{"targetUsername":"xyz", "message": "Hello World"}' \
   http://localhost:3001/signwithkey
   ```
+
+  
 
   
 
