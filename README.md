@@ -67,6 +67,8 @@ curl --header "Content-Type: multipart/form-data" \
 
 description: adds a public key to the authorized user. Basic Authentication expects username:password combination.
 
+TOOD:Having trouble signing with user generated private key. Getting an error saying "pem error: routines:PEM_read_bio:no start line"
+
 ```code
 $ node client.js addpublickey abc 123 keys1.pem  
 ```
@@ -95,9 +97,9 @@ curl --header "Content-Type: application/json" \
   http://localhost:3001/signwithkey
   ```
 
-  
+TODO:   
+**/verifymessage**
 
-  
-
+description: this endpoint should verify a signed message with private key is associated with public key.
 
   
