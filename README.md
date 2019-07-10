@@ -2,7 +2,7 @@ Signing with Keys.
 
 Prerequisite: use the keys provided or generate sample public and private keys
 In *NIX terminal, generate a ssh using ssh-keygen.
-Note sample public and private keysare attached.
+Note sample public and private keys are attached.
 
 
 ```code
@@ -12,9 +12,9 @@ $ ssh-keygen -f keys1.pub -e -m pem > keys1.pem
 ```
 
 Getting Started.
-1. 
+1. clone the repo
 ```
-$ git clone https://github.com/joseph-ortiz/joseph-2018
+$ git clone https://github.com/joseph-ortiz/joseph-2018 && cd joseph-2018
 ```
 2. install dependencies
 
