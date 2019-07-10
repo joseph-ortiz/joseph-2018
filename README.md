@@ -50,7 +50,7 @@ $ curl --header "Content-Type: application/json" \
 description:  sets the private key for the authenticated user.
 
 ```code
-$ node client.js addprivatekey abc 123 keys1.pem  
+$ node client.js addprivatekey abc 123 private.pem  
 ```
 ```code
 curl --header "Content-Type: multipart/form-data" \
@@ -80,9 +80,12 @@ curl --header "Content-Type: multipart/form-data" \
 
 **/signwithkey**
 
-description: this endpoint takes JSON data and signes the message for a given targetusername.
+description: this endpoint takes JSON data and signs the message for a given targetusername.
 
 Example
+```code
+$ node client.js signwithkey abc 123 xyz `hi world`
+```
 ```code
 curl --header "Content-Type: application/json" \
   --header 'Authorization: xyz:xyz123' \

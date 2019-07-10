@@ -61,5 +61,8 @@ switch(myargs[0]){
             console.log(stdout);
         })
     break;
+    default:
+    console.log('this is not a recognized command');
+    break;
 }
 

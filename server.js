@@ -1,7 +1,6 @@
 var crypto = require('crypto');
 var bcrypt = require('bcrypt');
 var express = require('express');
-var https = require('https');
 var fs = require('fs');
 var app = express();
 var bodyParser = require('body-parser');
@@ -55,6 +54,7 @@ app.post('/addPrivateKey', function(req, res, next) {
     
     console.log('in prvate key endpoint');
     console.log(req.body);
+    
     //authorize user.
     if(!req.headers.authorization){
         res.send('please pass auth header with username password. For example, authorization: abc:123');
@@ -63,26 +63,13 @@ app.post('/addPrivateKey', function(req, res, next) {
     if(!server.validUser(username, password)){
         res.send('invalid username and password');
     }else{
-        let userIndex = -1;
-        server.users.find((user, index) => {
-            let usernameMatches = user.username == username;
-            if(usernameMatches){
-                console.log('username matches');
-                userIndex = index;
-                return true;
-                
-            }else{
-                console.log(user);
-                console.log(username);
-            }
-        });
+        let userIndex = server.getUserIndex(username);
         if(userIndex >= 0){
             let privateKey = req.files.file.data.toString('utf8');
             console.log(privateKey);
             server.users[userIndex].privateKey = privateKey;
         }else{
             console.log('no user found');
-            //console.log(server.users);
         }
         res.end();
     }
@@ -101,32 +88,15 @@ app.post('/signwithkey', function(req,res){
     if(!server.validUser(username, password)){
         res.send('invalid username and password');
     }else{
-        let userIndex = -1;
-        server.users.find((user, index) => {
-            let usernameMatches = user.username == targetUsername;
-            if(usernameMatches){
-                console.log('username matches');
-                userIndex = index;
-                return true;
-                
-            }else{
-                console.log(user);
-                console.log(username);
-            }
-        });
+        let userIndex = server.getUserIndex(username);
         if(userIndex >= 0){
             //let publicKey = req.files.file.data.toString('utf8');
             //server.users[userIndex].publicKey = publicKey;
             var privateKey;
-            //var privateKey = '123';//server.users[userIndex].privateKey;
-            var privateKey = fs.readFileSync('key.pem', 'utf-8');
+            //var privateKey = server.users[userIndex].privateKey;
+            privateKey = fs.readFileSync('key.pem', 'utf-8');
             if(privateKey){
-                const signer = crypto.createSign('sha256');
-                signer.update(message);
-                signer.end();
-              //  privatekey = fs.readFileSync('key.pem', 'utf-8');
-                const signature = signer.sign(privateKey);
-                const signature_hex = signature.toString('hex');
+                let signature_hex = server.signWithPrivateKey(privateKey, message);
                 console.log('message is signed with a private key')
                 res.send(signature_hex);
                 
@@ -136,7 +106,6 @@ app.post('/signwithkey', function(req,res){
             
         }else{
             console.log('no user found');
-            //console.log(server.users);
         }
         res.end();
     }
@@ -207,11 +176,6 @@ class Server {
                 res();
             });
         })
-        
-    }
-
-    authenticate(password){
-        //return bcrypt.compare(password, this.hash);
     }
 
     storePublicKey(username,pasword, publicKey){
@@ -228,6 +192,16 @@ class Server {
         
     }
 
+    signWithPrivateKey(privateKey, message){
+        const signer = crypto.createSign('sha256');
+        signer.update(message);
+        signer.end();
+        //  privatekey = fs.readFileSync('key.pem', 'utf-8');
+        const signature = signer.sign(privateKey);
+        const signature_hex = signature.toString('hex');
+        return signature_hex
+    }
+
     encryptStringWithRsaPublicKey (toEncrypt, publicKey) {
         var buffer = Buffer.from(toEncrypt);
         var encrypted = crypto.publicEncrypt(publicKey, buffer);
@@ -236,6 +210,7 @@ class Server {
 
     submitMessage(signedMessage){
         //verify message
+        //TODO: verify message.
     }
     
 }
